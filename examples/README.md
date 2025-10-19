@@ -193,7 +193,7 @@ rules:
 Run the test workspace to see all validators in action:
 
 ```bash
-cd /Users/mshogin/my/dochub-validator-cli
+cd /Users/mshogin/my/archctl
 node src/cli.mjs --workspace examples/test-custom-validators
 ```
 

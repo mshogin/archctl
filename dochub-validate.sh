@@ -11,7 +11,7 @@
 set -e
 
 # Configuration
-IMAGE_NAME="dochub-validator-cli:latest"
+IMAGE_NAME="archctl:latest"
 WORKSPACE_DIR="${WORKSPACE_DIR:-$(pwd)}"
 
 # Colors for output

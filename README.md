@@ -30,13 +30,13 @@ Choose one of the following:
 
 1. Clone this repository:
 ```bash
-git clone https://github.com/yourusername/dochub-validator-cli.git
-cd dochub-validator-cli
+git clone https://github.com/mshogin/archctl.git
+cd archctl
 ```
 
 2. Build the Docker image:
 ```bash
-docker build -t dochub-validator-cli .
+docker build -t archctl .
 ```
 
 Or using the wrapper script:
@@ -48,8 +48,8 @@ Or using the wrapper script:
 
 1. Clone this repository:
 ```bash
-git clone https://github.com/yourusername/dochub-validator-cli.git
-cd dochub-validator-cli
+git clone https://github.com/mshogin/archctl.git
+cd archctl
 ```
 
 2. Install dependencies:
@@ -89,18 +89,18 @@ ln -s /path/to/DocHub dochub
 #### Direct Docker command:
 ```bash
 # Validate current directory
-docker run --rm -v $(pwd):/workspace dochub-validator-cli
+docker run --rm -v $(pwd):/workspace archctl
 
 # Validate specific directory
-docker run --rm -v /path/to/manifests:/workspace dochub-validator-cli
+docker run --rm -v /path/to/manifests:/workspace archctl
 
 # JSON output
-docker run --rm -v $(pwd):/workspace dochub-validator-cli --format json
+docker run --rm -v $(pwd):/workspace archctl --format json
 
 # Save report to file
 docker run --rm \
   -v $(pwd):/workspace \
-  dochub-validator-cli \
+  archctl \
   --format json --output /workspace/validation-report.json
 ```
 
@@ -270,7 +270,7 @@ jobs:
         run: |
           docker run --rm \
             -v ${{ github.workspace }}:/workspace \
-            dochub-validator-cli:latest \
+            archctl:latest \
             --format json \
             --output /workspace/validation-report.json
 
@@ -285,7 +285,7 @@ jobs:
         run: |
           docker run --rm \
             -v ${{ github.workspace }}:/workspace \
-            dochub-validator-cli:latest
+            archctl:latest
 ```
 
 ### GitLab CI
@@ -296,8 +296,8 @@ validate-architecture:
   services:
     - docker:dind
   script:
-    - docker build -t dochub-validator-cli .
-    - docker run --rm -v $(pwd):/workspace dochub-validator-cli --format json --output /workspace/report.json
+    - docker build -t archctl .
+    - docker run --rm -v $(pwd):/workspace archctl --format json --output /workspace/report.json
   artifacts:
     reports:
       junit: report.json
@@ -317,8 +317,8 @@ pipeline {
         stage('Validate Architecture') {
             steps {
                 script {
-                    docker.build('dochub-validator-cli')
-                    docker.image('dochub-validator-cli').inside {
+                    docker.build('archctl')
+                    docker.image('archctl').inside {
                         sh 'node src/cli.mjs --format json --output validation-report.json'
                     }
                 }
@@ -338,7 +338,7 @@ pipeline {
 ### Project Structure
 
 ```
-dochub-validator-cli/
+archctl/
 ├── src/
 │   ├── cli.mjs              # CLI interface (commander)
 │   ├── validator.mjs        # Core validation logic
@@ -485,7 +485,7 @@ This tool uses [DocHub](https://dochub.info) as a library, which is also license
 ## Support
 
 - Documentation: https://dochub.info
-- Issues: https://github.com/yourusername/dochub-validator-cli/issues
+- Issues: https://github.com/mshogin/archctl/issues
 - Community: Telegram @archascode
 
 ## Acknowledgments

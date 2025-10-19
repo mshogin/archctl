@@ -1,4 +1,4 @@
-# DocHub Validator CLI - Docker Image
+# archctl - Docker Image
 # Lightweight Node.js image for validating DocHub architecture manifests
 
 ARG NODE_VERSION=20
@@ -44,6 +44,6 @@ ENTRYPOINT ["node", "/app/src/cli.mjs"]
 CMD ["--workspace", "/workspace"]
 
 # Metadata
-LABEL maintainer="DocHub Validator CLI"
+LABEL maintainer="archctl"
 LABEL description="CLI tool for validating DocHub architecture manifests"
 LABEL version="1.0.0"

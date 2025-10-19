@@ -113,10 +113,10 @@ Use this checklist before publishing the repository to GitHub.
 
 ### Badges for README.md
 ```markdown
-![npm version](https://badge.fury.io/js/dochub-validator-cli.svg)
-![Docker Image](https://img.shields.io/docker/v/username/dochub-validator-cli)
+![npm version](https://badge.fury.io/js/archctl.svg)
+![Docker Image](https://img.shields.io/docker/v/username/archctl)
 ![Security](https://img.shields.io/github/workflow/status/username/repo/Security%20Audit)
-![License](https://img.shields.io/github/license/username/dochub-validator-cli)
+![License](https://img.shields.io/github/license/username/archctl)
 ```
 
 ### Community Files
@@ -160,10 +160,10 @@ Before making the repository public:
    npm run validate
 
    # Build Docker
-   docker build -t dochub-validator-cli:test .
+   docker build -t archctl:test .
 
    # Test Docker
-   docker run --rm -v $(pwd)/test-workspace:/workspace:ro dochub-validator-cli:test
+   docker run --rm -v $(pwd)/test-workspace:/workspace:ro archctl:test
    ```
 
 3. **Security Scan:**

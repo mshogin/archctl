@@ -123,7 +123,7 @@ node src/cli.mjs --workspace ./architecture --no-color
 - name: Validate Architecture
   run: |
     node src/cli.mjs --workspace . --format json --output validation-report.json
-  working-directory: ./dochub-validator-cli
+  working-directory: ./archctl
 
 - name: Upload report
   uses: actions/upload-artifact@v3
@@ -137,7 +137,7 @@ node src/cli.mjs --workspace ./architecture --no-color
 ```yaml
 validate:
   script:
-    - node dochub-validator-cli/src/cli.mjs --workspace . --format json
+    - node archctl/src/cli.mjs --workspace . --format json
   artifacts:
     reports:
       junit: validation-report.json
@@ -178,7 +178,7 @@ node src/cli.mjs --workspace ./architecture --verbose
 #!/bin/bash
 # pre-commit hook
 
-node path/to/dochub-validator-cli/src/cli.mjs --workspace .
+node path/to/archctl/src/cli.mjs --workspace .
 
 if [ $? -ne 0 ]; then
   echo "❌ Architecture validation failed!"
@@ -195,7 +195,7 @@ echo "✅ Architecture validation passed"
 #!/bin/bash
 # daily-check.sh
 
-node dochub-validator-cli/src/cli.mjs \
+node archctl/src/cli.mjs \
   --workspace ./architecture \
   --format json \
   --output "reports/validation-$(date +%Y%m%d).json"
@@ -215,7 +215,7 @@ WORKSPACES=("project-a" "project-b" "project-c")
 
 for ws in "${WORKSPACES[@]}"; do
   echo "Validating $ws..."
-  node dochub-validator-cli/src/cli.mjs --workspace "$ws"
+  node archctl/src/cli.mjs --workspace "$ws"
 
   if [ $? -ne 0 ]; then
     echo "❌ $ws validation failed"
@@ -236,7 +236,7 @@ echo "✅ All workspaces validated successfully"
 
 **Решение:**
 ```bash
-cd dochub-validator-cli
+cd archctl
 ln -s ../DocHub dochub
 ```
 
@@ -271,5 +271,5 @@ node src/cli.mjs --workspace ./architecture 2>/dev/null
 
 ## Поддержка
 
-- Issues: https://github.com/yourusername/dochub-validator-cli/issues
+- Issues: https://github.com/mshogin/archctl/issues
 - Telegram: @archascode

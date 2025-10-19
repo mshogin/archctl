@@ -34,13 +34,13 @@ node src/cli.mjs --workspace examples/test-custom-validators
 
 ```bash
 # Build Docker image
-docker build -t dochub-validator-cli .
+docker build -t archctl .
 
 # Or use wrapper script
 ./dochub-validate.sh --build
 
 # Run validator in Docker
-docker run --rm -v $(pwd):/workspace dochub-validator-cli
+docker run --rm -v $(pwd):/workspace archctl
 
 # Using wrapper script
 ./dochub-validate.sh --workspace /path/to/manifests
@@ -219,7 +219,7 @@ The Dockerfile:
 ## File Structure
 
 ```
-dochub-validator-cli/
+archctl/
 ├── src/
 │   ├── cli.mjs              # CLI interface (commander)
 │   ├── validator.mjs        # Core validation orchestration

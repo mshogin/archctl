@@ -5,7 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: dochub-validator-cli:latest
+    image: archctl:latest
     container_name: dochub-validator
     volumes:
       # Mount your architecture manifests directory
@@ -25,7 +25,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: dochub-validator-cli:latest
+    image: archctl:latest
     volumes:
       - ./workspace:/workspace:ro
       - ./reports:/reports

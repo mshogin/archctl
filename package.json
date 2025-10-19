@@ -1,5 +1,5 @@
 {
-  "name": "dochub-validator-cli",
+  "name": "archctl",
   "version": "1.0.0",
   "description": "CLI tool for validating DocHub architecture manifests",
   "type": "module",
@@ -38,6 +38,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yourusername/dochub-validator-cli.git"
+    "url": "git+https://github.com/mshogin/archctl.git"
   }
 }

@@ -13,8 +13,8 @@ Get started with DocHub Validator CLI in under 5 minutes!
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/dochub-validator-cli.git
-cd dochub-validator-cli
+git clone https://github.com/mshogin/archctl.git
+cd archctl
 
 # Install dependencies
 npm install
@@ -24,25 +24,25 @@ npm install
 ln -s /path/to/DocHub dochub
 
 # Option B: Clone DocHub as sibling directory
-cd .. && git clone https://github.com/DocHubTeam/DocHub.git && cd dochub-validator-cli
+cd .. && git clone https://github.com/DocHubTeam/DocHub.git && cd archctl
 
 # Option C: Use git submodule
 git submodule add https://github.com/DocHubTeam/DocHub.git dochub
 git submodule update --init --recursive
 
 # Install DocHub dependencies (required)
-cd ../DocHub && npm install && cd ../dochub-validator-cli
+cd ../DocHub && npm install && cd ../archctl
 ```
 
 ### Option 2: Docker Setup
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/dochub-validator-cli.git
-cd dochub-validator-cli
+git clone https://github.com/mshogin/archctl.git
+cd archctl
 
 # Build Docker image
-docker build -t dochub-validator-cli .
+docker build -t archctl .
 
 # Or use the wrapper script
 ./dochub-validate.sh --build
@@ -60,7 +60,7 @@ node src/cli.mjs
 ./dochub-validate.sh
 
 # Using Docker directly
-docker run --rm -v $(pwd):/workspace dochub-validator-cli
+docker run --rm -v $(pwd):/workspace archctl
 ```
 
 ### Validate Specific Directory
@@ -73,7 +73,7 @@ node src/cli.mjs --workspace /path/to/manifests
 ./dochub-validate.sh --workspace /path/to/manifests
 
 # Using Docker directly
-docker run --rm -v /path/to/manifests:/workspace dochub-validator-cli
+docker run --rm -v /path/to/manifests:/workspace archctl
 ```
 
 ### Generate JSON Report
@@ -131,10 +131,10 @@ Validate it:
 
 ```bash
 # From parent directory
-node ../dochub-validator-cli/src/cli.mjs --workspace my-architecture
+node ../archctl/src/cli.mjs --workspace my-architecture
 
 # Or
-cd ../dochub-validator-cli
+cd ../archctl
 ./dochub-validate.sh --workspace ../my-architecture
 ```
 
@@ -202,15 +202,15 @@ jobs:
 
       - name: Build validator
         run: |
-          git clone https://github.com/yourusername/dochub-validator-cli.git
-          cd dochub-validator-cli
-          docker build -t dochub-validator-cli .
+          git clone https://github.com/mshogin/archctl.git
+          cd archctl
+          docker build -t archctl .
 
       - name: Validate architecture
         run: |
           docker run --rm \
             -v ${{ github.workspace }}:/workspace \
-            dochub-validator-cli:latest
+            archctl:latest
 ```
 
 ### GitLab CI
@@ -223,10 +223,10 @@ validate-architecture:
   services:
     - docker:dind
   script:
-    - git clone https://github.com/yourusername/dochub-validator-cli.git
-    - cd dochub-validator-cli
-    - docker build -t dochub-validator-cli .
-    - docker run --rm -v $(pwd)/..:/workspace dochub-validator-cli
+    - git clone https://github.com/mshogin/archctl.git
+    - cd archctl
+    - docker build -t archctl .
+    - docker run --rm -v $(pwd)/..:/workspace archctl
 ```
 
 ## Troubleshooting
@@ -271,7 +271,7 @@ File loading errors like `file:///metamodel/root.yaml` are normal - DocHub tries
 ## Getting Help
 
 - Documentation: https://dochub.info
-- Issues: https://github.com/yourusername/dochub-validator-cli/issues
+- Issues: https://github.com/mshogin/archctl/issues
 - DocHub GitHub: https://github.com/DocHubTeam/DocHub
 
 Happy validating! 🚀

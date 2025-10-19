@@ -127,7 +127,7 @@ arch-validate --verbose
 
 ```bash
 # Always mount workspace as read-only
-docker run --rm -v $(pwd):/workspace:ro dochub-validator-cli
+docker run --rm -v $(pwd):/workspace:ro archctl
 
 # Don't expose Docker socket or use privileged mode
 # ❌ NEVER do this:
@@ -142,7 +142,7 @@ docker run --privileged -v /var/run/docker.sock:/var/run/docker.sock ...
   run: |
     docker run --rm \
       -v ${{ github.workspace }}:/workspace:ro \
-      dochub-validator-cli:latest
+      archctl:latest
 ```
 
 **CI/CD Security Checklist:**
@@ -219,7 +219,7 @@ Security updates will be:
 **Issue:** Very large manifests can cause memory exhaustion
 **Mitigation:** Use Docker with memory limits:
 ```bash
-docker run --rm -m 2g -v $(pwd):/workspace:ro dochub-validator-cli
+docker run --rm -m 2g -v $(pwd):/workspace:ro archctl
 ```
 
 ### 2. JSONata Performance
