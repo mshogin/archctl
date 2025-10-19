@@ -1,0 +1,39 @@
+#!/usr/bin/env node
+
+/*
+arch-validate - Validate DocHub architecture in current directory
+Convenience wrapper for dochub-validator-cli
+
+Usage:
+  cd /path/to/your/architecture
+  arch-validate
+
+Copyright (C) 2024
+Licensed under the Apache License, Version 2.0
+*/
+
+import { fileURLToPath } from 'url';
+import { dirname, resolve } from 'path';
+import { spawn } from 'child_process';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// Path to the actual CLI script
+const cliPath = resolve(__dirname, '../src/cli.mjs');
+
+// Get current working directory as workspace
+const workspace = process.cwd();
+
+// Build arguments: always validate current directory
+const args = ['--workspace', workspace, ...process.argv.slice(2)];
+
+// Run the CLI
+const child = spawn('node', [cliPath, ...args], {
+    stdio: 'inherit',
+    cwd: __dirname
+});
+
+child.on('exit', (code) => {
+    process.exit(code);
+});

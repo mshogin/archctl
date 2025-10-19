@@ -1,0 +1,51 @@
+
+# aspects:
+#   root:
+#     title: Root
+#   root.business:
+#     title: Business
+
+rules:
+  validators:
+    custom.contexts.empty:
+      title: Контексты без компонентов
+      source: >
+        (
+          $MANIFEST := $;
+          [contexts.$spread().(
+            $CONTEXT_ID := $keys()[0];
+            $CONTEXT := *;
+            $COMPONENTS := $CONTEXT.components;
+
+            $not($exists($COMPONENTS)) or $count($COMPONENTS) = 0 ? {
+              "uid": "empty-context-" & $CONTEXT_ID,
+              "correction": "Добавьте компоненты в контекст или удалите контекст",
+              "description": "Контекст [" & $CONTEXT_ID & "] не содержит компонентов. Пустые контексты могут указывать на неполное описание архитектуры.",
+              "location": "/architect/contexts/" & $CONTEXT_ID,
+              "title": "Контекст '" & $CONTEXT_ID & "' не содержит компонентов"
+            } : null
+          )[$]]
+        )
+
+components:
+  system:
+    title: System
+    entity: system
+    aspects:
+      - root
+
+  backend:
+    title: Backend Component
+    entity: component
+    aspects:
+      - root.business
+
+contexts:
+  main:
+    title: Main Context
+    components:
+      - system
+      - backend
+
+  back:
+    title: Back Context

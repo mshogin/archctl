@@ -1,0 +1,24 @@
+# Architecture with validation errors
+
+aspects:
+  business:
+    title: Business
+    # ERROR: aspects должны иметь parent (root aspect)
+
+components:
+  app:
+    title: My App
+    aspects:
+      - business
+    links:
+      - id: database
+        title: Uses database
+        # ERROR: database component doesn't exist
+
+contexts:
+  main:
+    title: Main Context
+    components:
+      - app
+      - nonexistent
+        # ERROR: component 'nonexistent' doesn't exist

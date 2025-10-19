@@ -1,0 +1,27 @@
+imports:
+#  - http://localhost:8080/metamodel/root.yaml
+#  - http://localhost:8080/documentation/root.yaml
+#  - https://dochub.info/documentation/root.yaml
+#  - root.yaml
+
+rules:
+  validators:
+    custom.contexts.empty:
+      title: Контексты без компонентов
+      source: >
+        (
+          $MANIFEST := $;
+          [contexts.$spread().(
+            $CONTEXT_ID := $keys()[0];
+            $CONTEXT := *;
+            $COMPONENTS := $CONTEXT.components;
+
+            $not($exists($COMPONENTS)) or $count($COMPONENTS) = 0 ? {
+              "uid": "empty-context-" & $CONTEXT_ID,
+              "correction": "Добавьте компоненты в контекст или удалите контекст",
+              "description": "Контекст [" & $CONTEXT_ID & "] не содержит компонентов. Пустые контексты могут указывать на неполное описание архитектуры.",
+              "location": "/architect/contexts/" & $CONTEXT_ID,
+              "title": "Контекст '" & $CONTEXT_ID & "' не содержит компонентов"
+            } : null
+          )[$]]
+        )

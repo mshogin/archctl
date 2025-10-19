@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  validator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: dochub-validator-cli:latest
+    container_name: dochub-validator
+    volumes:
+      # Mount your architecture manifests directory
+      - ./workspace:/workspace:ro
+    environment:
+      # DocHub configuration
+      - VUE_APP_DOCHUB_ROOT_MANIFEST=/workspace/dochub.yaml
+      # Optional: Custom metamodel
+      # - VUE_APP_DOCHUB_METAMODEL=/workspace/custom-metamodel.yaml
+      # Optional: Roles configuration
+      # - VUE_APP_DOCHUB_ROLES_MODEL=enabled
+      # - VUE_APP_DOCHUB_ROLES=/workspace/roles.yaml
+    command: ["--workspace", "/workspace", "--format", "text"]
+
+  # Example: Run validator and output JSON report
+  validator-json:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: dochub-validator-cli:latest
+    volumes:
+      - ./workspace:/workspace:ro
+      - ./reports:/reports
+    environment:
+      - VUE_APP_DOCHUB_ROOT_MANIFEST=/workspace/dochub.yaml
+    command:
+      - "--workspace"
+      - "/workspace"
+      - "--format"
+      - "json"
+      - "--output"
+      - "/reports/validation-report.json"
+    profiles:
+      - json-report

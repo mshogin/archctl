@@ -1,0 +1,17 @@
+node_modules
+npm-debug.log
+.git
+.gitignore
+.env
+.env.local
+*.md
+!README.md
+.DS_Store
+coverage
+dist
+.idea
+.vscode
+*.log
+workspace/
+reports/
+validation-report.json

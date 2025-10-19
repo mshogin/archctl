@@ -1,0 +1,4 @@
+[submodule "dochub"]
+	path = dochub
+	url = https://github.com/DocHubTeam/DocHub.git
+	branch = master

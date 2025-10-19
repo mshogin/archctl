@@ -1,0 +1,205 @@
+# Example: Custom Validators in DocHub
+# This file demonstrates how to create custom validators for your architecture
+
+rules:
+  validators:
+    # ============================================
+    # Example 1: Check for empty contexts
+    # ============================================
+    custom.contexts.empty:
+      title: Контексты без компонентов (Contexts without components)
+      source: >
+        (
+          [contexts.$spread().(
+            $CONTEXT_ID := $keys()[0];
+            $CONTEXT := *;
+            $COMPONENTS := $CONTEXT.components;
+
+            $not($exists($COMPONENTS)) or $count($COMPONENTS) = 0 ? {
+              "uid": "empty-context-" & $CONTEXT_ID,
+              "title": "Контекст '" & $CONTEXT_ID & "' не содержит компонентов",
+              "location": "/architect/contexts/" & $CONTEXT_ID,
+              "description": "Контекст [" & $CONTEXT_ID & "] не содержит компонентов. Пустые контексты могут указывать на неполное описание архитектуры.",
+              "correction": "Добавьте компоненты в контекст или удалите контекст"
+            } : null
+          )[$]]
+        )
+
+    # ============================================
+    # Example 2: Check component naming convention
+    # ============================================
+    custom.components.naming:
+      title: Правила именования компонентов (Component naming convention)
+      source: >
+        (
+          [components.$spread().(
+            $ID := $keys()[0];
+
+            /* Check if component name uses kebab-case (lowercase with hyphens) */
+            $ID ~> /^[a-z][a-z0-9]*(-[a-z0-9]+)*(\.[a-z][a-z0-9]*(-[a-z0-9]+)*)*$/ ? null : {
+              "uid": "naming-" & $ID,
+              "title": "Компонент '" & $ID & "' не соответствует правилам именования",
+              "location": "/architect/components/" & $ID,
+              "description": "Имя компонента должно быть в kebab-case (lowercase with hyphens).",
+              "correction": "Переименуйте компонент используя kebab-case, например: 'my-component' или 'system.sub-system'"
+            }
+          )[$]]
+        )
+
+    # ============================================
+    # Example 3: Check for missing component descriptions
+    # ============================================
+    custom.components.description:
+      title: Компоненты без описания (Components without description)
+      source: >
+        (
+          [components.$spread().(
+            $ID := $keys()[0];
+            $COMPONENT := *;
+
+            $not($exists($COMPONENT.description)) or $length($COMPONENT.description) = 0 ? {
+              "uid": "no-desc-" & $ID,
+              "title": "Компонент '" & $ID & "' не имеет описания",
+              "location": "/architect/components/" & $ID,
+              "description": "У компонента отсутствует поле 'description'. Документирование компонентов важно для понимания архитектуры.",
+              "correction": "Добавьте поле 'description' с описанием назначения компонента"
+            } : null
+          )[$]]
+        )
+
+    # ============================================
+    # Example 4: Check for components without entity type
+    # ============================================
+    custom.components.entity:
+      title: Компоненты без типа сущности (Components without entity type)
+      source: >
+        (
+          [components.$spread().(
+            $ID := $keys()[0];
+            $COMPONENT := *;
+
+            $not($exists($COMPONENT.entity)) ? {
+              "uid": "no-entity-" & $ID,
+              "title": "Компонент '" & $ID & "' не имеет типа сущности",
+              "location": "/architect/components/" & $ID,
+              "description": "У компонента не указан тип сущности (entity). Это затрудняет понимание типа компонента.",
+              "correction": "Добавьте поле 'entity' со значением, например: 'system', 'service', 'database', 'component'"
+            } : null
+          )[$]]
+        )
+
+    # ============================================
+    # Example 5: Check for orphaned aspects (aspects not used by any component)
+    # ============================================
+    custom.aspects.orphaned:
+      title: Неиспользуемые аспекты (Unused aspects)
+      source: >
+        (
+          $MANIFEST := $;
+          $USED_ASPECTS := $distinct($MANIFEST.components.*.aspects);
+
+          [aspects.$spread().(
+            $ASPECT_ID := $keys()[0];
+
+            $not($ASPECT_ID in $USED_ASPECTS) ? {
+              "uid": "orphaned-aspect-" & $ASPECT_ID,
+              "title": "Аспект '" & $ASPECT_ID & "' не используется ни одним компонентом",
+              "location": "/architect/aspects/" & $ASPECT_ID,
+              "description": "Аспект определен, но не используется ни одним компонентом. Возможно, это ошибка или устаревший аспект.",
+              "correction": "Используйте аспект в компонентах или удалите его определение"
+            } : null
+          )[$]]
+        )
+
+    # ============================================
+    # Example 6: Check for components with too many links (potential god object)
+    # ============================================
+    custom.components.too_many_links:
+      title: Компоненты с большим количеством связей (Components with too many links)
+      source: >
+        (
+          $MAX_LINKS := 10;
+
+          [components.$spread().(
+            $ID := $keys()[0];
+            $COMPONENT := *;
+            $LINKS := $COMPONENT.links;
+            $LINK_COUNT := $count($LINKS);
+
+            $LINK_COUNT > $MAX_LINKS ? {
+              "uid": "too-many-links-" & $ID,
+              "title": "Компонент '" & $ID & "' имеет слишком много связей (" & $string($LINK_COUNT) & ")",
+              "location": "/architect/components/" & $ID,
+              "description": "Компонент имеет " & $string($LINK_COUNT) & " связей, что превышает рекомендуемый максимум (" & $string($MAX_LINKS) & "). Это может указывать на God Object антипаттерн.",
+              "correction": "Рассмотрите возможность декомпозиции компонента на более мелкие части"
+            } : null
+          )[$]]
+        )
+
+# Example architecture structure
+aspects:
+  root:
+    title: Root Aspect
+  root.business:
+    title: Business Aspect
+  root.technical:
+    title: Technical Aspect
+  root.security:
+    title: Security Aspect
+
+components:
+  system:
+    title: System
+    description: Main system component
+    entity: system
+    aspects:
+      - root
+
+  user-service:
+    title: User Service
+    description: Service for user management
+    entity: service
+    aspects:
+      - root.business
+      - root.technical
+    links:
+      - id: auth-service
+      - id: database
+
+  auth-service:
+    title: Authentication Service
+    description: Handles authentication and authorization
+    entity: service
+    aspects:
+      - root.security
+      - root.technical
+
+  database:
+    title: Database
+    description: PostgreSQL database
+    entity: database
+    aspects:
+      - root.technical
+
+  # This component has issues:
+  # - No description
+  # - No entity type
+  # - Wrong naming (capital letters)
+  BadComponent:
+    title: Bad Component
+    aspects:
+      - root
+
+contexts:
+  main:
+    title: Main Context
+    components:
+      - system
+      - user-service
+      - auth-service
+      - database
+      - BadComponent
+
+  # This context has no components (will trigger custom.contexts.empty validator)
+  empty-context:
+    title: Empty Context
