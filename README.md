@@ -44,7 +44,7 @@ Or using the wrapper script:
 ./dochub-validate.sh --build
 ```
 
-### Local Installation
+### Local Installation (for Development)
 
 1. Clone this repository:
 ```bash
@@ -65,6 +65,16 @@ git submodule update --init --recursive
 
 # Option B: Symlink to existing DocHub installation
 ln -s /path/to/DocHub dochub
+```
+
+4. Install `arch-validate` command globally (via symlink):
+```bash
+# Creates a symlink so changes in the repo are immediately available
+./install-local.sh
+
+# Now you can use arch-validate from anywhere
+cd /path/to/your/architecture
+arch-validate
 ```
 
 ## Usage
