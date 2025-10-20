@@ -1,0 +1,348 @@
+title: archctl - Architecture Validator CLI
+
+docs:
+  welcome:
+    type: markdown
+    location: README.md
+
+  architecture:
+    title: Architecture Overview
+    type: markdown
+    source: |
+      # archctl Architecture
+
+      archctl is a CLI tool for validating DocHub architecture manifests. It uses DocHub's validation
+      engine as a library to provide standalone validation without requiring the full DocHub server.
+
+      ## Key Design Principles
+
+      1. **Standalone Operation** - No server required, pure CLI tool
+      2. **Docker-First** - Containerized for easy distribution and CI/CD integration
+      3. **Read-Only** - Never modifies user workspace, only reads and validates
+      4. **Extensible** - Supports custom validators via JSONata queries
+      5. **Security-First** - Comprehensive security audit and best practices
+
+      ## Architecture Layers
+
+      The system is organized into three main layers:
+      - **CLI Layer** - User interface and argument parsing
+      - **Validation Engine** - Core orchestration and DocHub integration
+      - **Output Layer** - Formatting and presentation
+
+  security:
+    title: Security Documentation
+    type: markdown
+    location: SECURITY.md
+
+  quick-start:
+    title: Quick Start Guide
+    type: markdown
+    location: QUICK_START.md
+
+aspects:
+  cli:
+    title: Command Line Interface
+    description: User-facing command line interface components
+
+  validation:
+    title: Validation Engine
+    description: Core validation logic and DocHub integration
+
+  output:
+    title: Output Formatting
+    description: Output formatting and presentation layer
+
+  distribution:
+    title: Distribution
+    description: Distribution mechanisms (Docker, npm, binary)
+
+  security:
+    title: Security
+    description: Security features and controls
+
+  development:
+    title: Development
+    description: Development tools and workflows
+
+components:
+  cli:
+    title: CLI Layer
+    entity: system
+    description: Command-line interface layer for user interaction
+
+  cli.main:
+    title: CLI Entry Point
+    entity: service
+    description: Main CLI interface using Commander.js for argument parsing and command orchestration
+    aspects:
+      - cli
+    technologies:
+      - node.js
+      - commander
+
+  cli.archvalidate:
+    title: arch-validate Command
+    entity: service
+    description: Convenience wrapper that automatically sets workspace to current directory and delegates to the main CLI with proper arguments
+    aspects:
+      - cli
+      - development
+    technologies:
+      - node.js
+
+  validator:
+    title: Validation Layer
+    entity: system
+    description: Core validation engine layer
+
+  validator.core:
+    title: Validation Orchestrator
+    entity: service
+    description: Core validation engine that orchestrates the validation process. Initializes DocHub environment, loads manifests, processes entities, and executes validators
+    aspects:
+      - validation
+    technologies:
+      - node.js
+      - dochub-engine
+
+  output:
+    title: Output Layer
+    entity: system
+    description: Output formatting and presentation layer
+
+  output.formatter:
+    title: Output Formatter
+    entity: service
+    description: Formats validation results into human-readable text or machine-parsable JSON
+    aspects:
+      - output
+    technologies:
+      - node.js
+      - chalk
+
+  dochub:
+    title: DocHub Engine
+    entity: system
+    description: DocHub components used as library
+
+  dochub.parser:
+    title: DocHub Manifest Parser
+    entity: external
+    description: DocHub's manifest parsing engine (used as library)
+    aspects:
+      - validation
+    technologies:
+      - dochub-engine
+
+  dochub.validators:
+    title: DocHub Validators
+    entity: external
+    description: DocHub's built-in and custom validators execution engine
+    aspects:
+      - validation
+    technologies:
+      - dochub-engine
+      - jsonata
+
+  dochub.entities:
+    title: DocHub Entities Processor
+    entity: external
+    description: DocHub's entities processing system
+    aspects:
+      - validation
+    technologies:
+      - dochub-engine
+
+  docker:
+    title: Docker Distribution
+    entity: system
+    description: Docker-based distribution components
+
+  docker.image:
+    title: Docker Image
+    entity: deployment
+    description: |
+      Alpine-based Docker image containing archctl and DocHub. Provides isolated, reproducible
+      validation environment with read-only workspace mounting.
+    aspects:
+      - distribution
+      - security
+    technologies:
+      - docker
+      - alpine-linux
+
+  npm:
+    title: NPM Distribution
+    entity: system
+    description: NPM-based distribution components
+
+  npm.package:
+    title: NPM Package
+    entity: deployment
+    description: Node.js package with bin entries for global installation
+    aspects:
+      - distribution
+    technologies:
+      - npm
+
+  install:
+    title: Installation Tools
+    entity: system
+    description: Local installation and setup tools
+
+  install.script:
+    title: Local Install Script
+    entity: service
+    description: Shell script for creating symlinks to enable local development workflow
+    aspects:
+      - development
+    technologies:
+      - bash
+
+  github:
+    title: GitHub Integration
+    entity: system
+    description: GitHub-based automation and CI/CD
+
+  github.actions:
+    title: GitHub Actions Workflow
+    entity: automation
+    description: |
+      Security scanning workflow including npm audit, Dockerfile linting, container scanning,
+      secret detection, dependency review, and CodeQL analysis.
+    aspects:
+      - security
+      - development
+    technologies:
+      - github-actions
+      - trivy
+      - hadolint
+      - gitleaks
+      - codeql
+
+contexts:
+  runtime:
+    title: Runtime Architecture
+    description: Components involved during validation execution
+    components:
+      - cli
+      - cli.main
+      - cli.archvalidate
+      - validator
+      - validator.core
+      - output
+      - output.formatter
+      - dochub
+      - dochub.parser
+      - dochub.validators
+      - dochub.entities
+
+  distribution:
+    title: Distribution Mechanisms
+    description: How archctl is distributed to end users
+    components:
+      - docker
+      - docker.image
+      - npm
+      - npm.package
+
+  development:
+    title: Development Environment
+    description: Tools and components for local development
+    components:
+      - install
+      - install.script
+      - cli.archvalidate
+      - github
+      - github.actions
+
+technologies:
+  node.js:
+    title: Node.js
+    description: JavaScript runtime (v20+)
+    link: https://nodejs.org
+
+  commander:
+    title: Commander.js
+    description: CLI argument parsing framework
+    link: https://github.com/tj/commander.js
+
+  chalk:
+    title: Chalk
+    description: Terminal string styling
+    link: https://github.com/chalk/chalk
+
+  dochub-engine:
+    title: DocHub Engine
+    description: DocHub's core validation and processing engine
+    link: https://github.com/DocHubTeam/DocHub
+
+  jsonata:
+    title: JSONata
+    description: Query and transformation language for JSON data
+    link: https://jsonata.org
+
+  docker:
+    title: Docker
+    description: Container platform
+    link: https://docker.com
+
+  alpine-linux:
+    title: Alpine Linux
+    description: Minimal Linux distribution for containers
+    link: https://alpinelinux.org
+
+  npm:
+    title: npm
+    description: Node.js package manager
+    link: https://npmjs.com
+
+  bash:
+    title: Bash
+    description: Unix shell scripting language
+    link: https://www.gnu.org/software/bash/
+
+  github-actions:
+    title: GitHub Actions
+    description: CI/CD automation platform
+    link: https://github.com/features/actions
+
+  trivy:
+    title: Trivy
+    description: Container vulnerability scanner
+    link: https://github.com/aquasecurity/trivy
+
+  hadolint:
+    title: Hadolint
+    description: Dockerfile linter
+    link: https://github.com/hadolint/hadolint
+
+  gitleaks:
+    title: Gitleaks
+    description: Secret detection tool
+    link: https://github.com/gitleaks/gitleaks
+
+  codeql:
+    title: CodeQL
+    description: Semantic code analysis engine
+    link: https://codeql.github.com
+
+rules:
+  validators:
+    # Add custom validators for this project
+    archctl.components.description:
+      title: All components should have descriptions
+      source: >
+        (
+          [components.$spread().(
+            $ID := $keys()[0];
+            $COMP := *;
+
+            $not($exists($COMP.description)) ? {
+              "uid": "missing-desc-" & $ID,
+              "title": "Component '" & $ID & "' is missing a description",
+              "location": "/architect/components/" & $ID,
+              "correction": "Add a description field to explain the component's purpose"
+            } : null
+          )[$]]
+        )
